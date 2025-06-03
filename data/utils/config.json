@@ -1,9 +1,16 @@
 {
     "base_url": "https://www.unhcr.org/refugee-statistics/file-download/",
-    "output_dir": "beyondfootsteps-etl\\data",
+    "output_dir": "data",
     "year_range": {
         "from": 2000,
         "to": 2025
+    },
+    "common_params": {
+        "data-finder": "on",
+        "data_finder[displayType]": "totals",
+        "data_finder[year__filterType]": "range",
+        "data_finder[coo][displayType]": "displayAll",
+        "data_finder[coa][displayType]": "displayAll"
     },
     "datasets": {
         "population": {
@@ -17,21 +24,19 @@
                 "OOC"
             ]
         },
-        "asylum_applications": {
-        },
-        "asylum_decisions": {
-        },
-        "idp_idmc": {
-        },
-        "palestine_refugees": {
-        },
         "nowcasting": {
-            "population_types": [
-                "REF",
-                "ASY",
-                "IDP",
-                "OIP"
-            ]
-        }
+            "population_types": ["REF", "ASY", "IDP", "OIP"]
+        },
+        "asylum_applications": {},
+        "asylum_decisions": {},
+        "idp_idmc": {},
+        "palestine_refugees": {},
+        "refugee_returnees": {},
+        "idp_returnees": {},
+        "refugee_naturalization": {},
+        "resettlement_submissions": {},
+        "resettlement_departures": {},
+        "resettlement_arrivals": {},
+        "resettlement_needs": {}
     }
 }

@@ -20,6 +20,15 @@ class fetch_data():
         self.logger.info("Obtaining json config")
         self.config = load_config(r"C:\Users\EzequielPerez\Documents\Personal\Proyectos\MigrantScope\beyondfootsteps-etl\data\utils\config.json")
     
+    def get_dataset_group(self, dataset_name):
+        solutions_datasets = {
+            "refugee_returnees", "idp_returnees", "refugee_naturalization",
+            "resettlement_submissions", "resettlement_departures",
+            "resettlement_arrivals", "resettlement_needs"
+        }
+        return "solutions" if dataset_name in solutions_datasets else "displacement"
+
+
     def build_unhcr_url(self, dataset_name):
         self.logger.info(f"Building URL for {dataset_name}")
         base_url = self.config['base_url']
@@ -28,13 +37,14 @@ class fetch_data():
         
         params = {
             "data-finder": "on",
-            "data-finder[dataGroup]": "displacement",
+            "data_finder[dataGroup]": self.get_dataset_group(dataset_name),
+            "data_finder[dataset]": dataset_name,
             "data_finder[displayType]": "totals",
             "data_finder[year__filterType]": "range",
             "data_finder[year__rangeFrom]": year_from,
             "data_finder[year__rangeTo]": year_to,
-            "data_finder[coo__displayType]": "doNotDisplay",
-            "data_finder[coa__displayType]": "doNotDisplay"
+            "data_finder[coo][displayType]": "displayAll",
+            "data_finder[coa][displayType]": "displayAll"
         }
         
         population_types = self.config["datasets"].get(dataset_name, {}).get("population_types")
@@ -42,7 +52,7 @@ class fetch_data():
             params["data_finder[populationType]"] = population_types
         return f"{base_url}?{urlencode(params, doseq=True)}"
     
-    def download_unhcr_url(self, url, output_dir, dataset):
+    def download_unhcr_url(self, url, output_dir, dataset, date):
         self.logger.info(f"Starting download")
         headers = {
         "User-Agent": "Mozilla/5.0",
@@ -54,9 +64,10 @@ class fetch_data():
         
         with zipfile.ZipFile(io.BytesIO(response.content)) as zip:
             for file in zip.namelist():
-                if file.endswith(".csv"):
-                    timestamp = datetime.now().strftime("%d%m%Y%H%M")
-                    filename = f"{dataset}_{timestamp}.csv"
+                if file.endswith(".csv") and "footnotes" not in file.lower():
+                    output_dir = f"{output_dir}/{date}"
+                    filename = f"{dataset}_0.csv"
+                    
                     os.makedirs(output_dir, exist_ok=True)
                     output_path = os.path.join(output_dir, filename)
                     with zip.open(file) as csv_file, open(output_path, "wb") as out_file:
@@ -67,11 +78,12 @@ class fetch_data():
         datasets = self.config["datasets"]
         output_dir = self.config["output_dir"]
         self.logger.info("Downloading UNHCR data")
+        date = datetime.now().strftime("%d%m%Y%H")
         for dataset in datasets:
             url = self.build_unhcr_url(dataset)
             try:
                 if url:
-                    self.download_unhcr_url(url, output_dir, dataset)
+                    self.download_unhcr_url(url, output_dir, dataset, date)
             except:
                 self.logger.warning(f"Error downloading from {url}")
                 
