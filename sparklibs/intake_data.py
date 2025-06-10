@@ -19,7 +19,15 @@ class IntakeData(BaseJob):
         return super()._config_args(parser)
     
     def run(self, args: Namespace):
-        (file_name, origin, entity) = self.extract_data_from_path(args.file)
+        if args.file == "all":
+            directory = str(Path(__file__).resolve().parents[1] / "data/raw")
+            for file in os.listdir(directory):
+                self.process_bronze_layer(file)
+        else:
+            self.process_bronze_layer(args.file)
+        
+    def process_bronze_layer(self, file):
+        (file_name, origin, entity) = self.extract_data_from_path(file)
         self.logger.info(f'File to process: {file_name}')
         self.logger.info(f'Origin: {origin}')
         self.logger.info(f'Entity: {entity}')
