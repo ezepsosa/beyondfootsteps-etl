@@ -193,4 +193,6 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 
-data/[0-9]*/
+raw
+bronze
+silver
