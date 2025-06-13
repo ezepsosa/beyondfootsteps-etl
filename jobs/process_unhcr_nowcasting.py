@@ -16,8 +16,8 @@ class ProcessUnhcrNowcasting(SilverProcessor):
             concat_ws(
                 "_",
                 coalesce(col("Year"), lit("")),
-                coalesce(col("Country of Origin ISO"), lit("")),
-                coalesce(col("Country of Asylum ISO"), lit(""))
+                coalesce(col("Country of Asylum ISO"), lit("")),
+                coalesce(col("Country of Origin ISO"), lit(""))
             )
         )
 if __name__ == "__main__":
