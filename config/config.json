@@ -1,0 +1,299 @@
+
+{
+    "IntakeData":{
+        "input_dir": "data/raw",
+        "output_dir": "data/bronze"
+    },
+    "ProcessUnhcrAsylumApplications":{
+        "input_dir": "data/bronze",
+        "output_dir": "data/silver"
+    },
+    "FetchData": {
+        "output_dir": "data/raw",
+        "base_url": "https://www.unhcr.org/refugee-statistics/file-download/",
+        "headers": {
+            "User-Agent": "Mozilla/5.0",
+            "Accept": "application/zip,application/octet-stream;q=0.9,*/*;q=0.8",
+            "Referer": "https://www.unhcr.org/refugee-statistics/download"
+        },
+        "datasets": {
+            "population": {
+                "params": {
+                    "data-finder": "on",
+                    "data_finder[dataGroup]": "displacement",
+                    "data_finder[dataset]": "population",
+                    "data_finder[displayType]": "demographics",
+                    "data_finder[populationTypeGrouping]": "0",
+                    "data_finder[populationType][0]": "REF",
+                    "data_finder[populationType][1]": "ASY",
+                    "data_finder[populationType][2]": "IDP",
+                    "data_finder[populationType][3]": "OIP",
+                    "data_finder[populationType][4]": "STA",
+                    "data_finder[populationType][5]": "HST",
+                    "data_finder[populationType][6]": "OOC",
+                    "data_finder[year__filterType]": "custom",
+                    "data_finder[year__custom][0]": 2024,
+                    "data_finder[year__custom][1]": 2023,
+                    "data_finder[year__custom][2]": 2022,
+                    "data_finder[year__custom][3]": 2021,
+                    "data_finder[year__custom][4]": 2020,
+                    "data_finder[coo__displayType]": "all",
+                    "data_finder[coa__displayType]": "doNotDisplay",
+                    "data_finder[advanced__demoLocationName]": "",
+                    "data_finder[advanced__demoUrbanRuralGrouping]": "0",
+                    "data_finder[advanced__demoAccTypeGrouping]": "0",
+                    "data_finder[year__]": "",
+                    "data_finder[coo__]": "",
+                    "data_finder[coa__]": "",
+                    "data_finder[advanced__]": "",
+                    "data_finder[submit]": ""
+                }
+            },
+            "nowcasting": {
+                "params": {
+                    "data-finder": "on",
+                    "data_finder[dataGroup]": "displacement",
+                    "data_finder[dataset]": "nowcasting",
+                    "data_finder[year__filterType]": "custom",
+                    "data_finder[year__custom][0]": 2025,
+                    "data_finder[populationType][0]": "REF",
+                    "data_finder[populationType][1]": "ASY",
+                    "data_finder[coa__displayType]": "all",
+                    "data_finder[advanced__source]": "",
+                    "data_finder[year__]": "",
+                    "data_finder[coa__]": "",
+                    "data_finder[advanced__]": "",
+                    "data_finder[submit]": ""
+                }
+            },
+            "asylum_applications": {
+                "params": {
+                    "data-finder": "on",
+                    "data_finder[dataGroup]": "displacement",
+                    "data_finder[dataset]": "asylumApplications",
+                    "data_finder[year__filterType]": "custom",
+                    "data_finder[year__custom][0]": 2024,
+                    "data_finder[year__custom][1]": 2023,
+                    "data_finder[year__custom][2]": 2022,
+                    "data_finder[year__custom][3]": 2021,
+                    "data_finder[year__custom][4]": 2020,
+                    "data_finder[coo__displayType]": "all",
+                    "data_finder[coa__displayType]": "all",
+                    "data_finder[advanced__asylumAuthorityGrouping]": 0,
+                    "data_finder[advanced__applicationTypeGrouping]": 0,
+                    "data_finder[advanced__asylumCasesPersonsGrouping]": 0,
+                    "data_finder[year__]": "",
+                    "data_finder[coo__]": "",
+                    "data_finder[coa__]": "",
+                    "data_finder[advanced__]": "",
+                    "data_finder[submit]": ""
+                }
+            },
+            "asylum_decisions": {
+                "params": {
+                    "data-finder": "on",
+                    "data_finder[dataGroup]": "displacement",
+                    "data_finder[dataset]": "asylumDecisions",
+                    "data_finder[year__filterType]": "custom",
+                    "data_finder[year__custom][0]": 2024,
+                    "data_finder[year__custom][1]": 2023,
+                    "data_finder[year__custom][2]": 2022,
+                    "data_finder[year__custom][3]": 2021,
+                    "data_finder[year__custom][4]": 2020,
+                    "data_finder[coo__displayType]": "all",
+                    "data_finder[coa__displayType]": "all",
+                    "data_finder[advanced__asylumAuthorityGrouping]": 0,
+                    "data_finder[advanced__asylumDecStageOfProcedureGrouping]": 0,
+                    "data_finder[advanced__asylumCasesPersonsGrouping]": 0,
+                    "data_finder[year__]": "",
+                    "data_finder[coo__]": "",
+                    "data_finder[coa__]": "",
+                    "data_finder[advanced__]": "",
+                    "data_finder[submit]": ""
+                }
+            },
+            "idp_idmc": {
+                "params": {
+                    "data-finder": "on",
+                    "data_finder[dataGroup]": "displacement",
+                    "data_finder[dataset]": "idp",
+                    "data_finder[displayType]": "totals",
+                    "data_finder[year__filterType]": "custom",
+                    "data_finder[year__custom][0]": 2024,
+                    "data_finder[year__custom][1]": 2023,
+                    "data_finder[year__custom][2]": 2022,
+                    "data_finder[year__custom][3]": 2021,
+                    "data_finder[year__custom][4]": 2020,
+                    "data_finder[coo__displayType]": "all",
+                    "data_finder[year__]": "",
+                    "data_finder[coo__]": "",
+                    "data_finder[advanced__]": "",
+                    "data_finder[submit]": ""
+                }
+            },
+            "palestine_refugees": {
+                "params": {
+                    "data-finder": "on",
+                    "data_finder[dataGroup]": "displacement",
+                    "data_finder[dataset]": "unrwa",
+                    "data_finder[displayType]": "demographics",
+                    "data_finder[year__filterType]": "custom",
+                    "data_finder[year__custom][0]": 2024,
+                    "data_finder[year__custom][1]": 2023,
+                    "data_finder[year__custom][2]": 2022,
+                    "data_finder[year__custom][3]": 2021,
+                    "data_finder[year__custom][4]": 2020,
+                    "data_finder[coo__displayType]": "all",
+                    "data_finder[coa__displayType]": "all",
+                    "data_finder[year__]": "",
+                    "data_finder[coo__]": "",
+                    "data_finder[coa__]": "",
+                    "data_finder[advanced__]": "",
+                    "data_finder[submit]": ""
+                }
+            },
+            "idp_returnees": {
+                "params": {
+                    "data-finder": "on",
+                    "data_finder[dataGroup]": "solutions",
+                    "data_finder[dataset]": "solutionsIdpReturnees",
+                    "data_finder[displayType]": "totals",
+                    "data_finder[year__filterType]": "custom",
+                    "data_finder[year__custom][0]": 2024,
+                    "data_finder[year__custom][1]": 2023,
+                    "data_finder[year__custom][2]": 2022,
+                    "data_finder[year__custom][3]": 2021,
+                    "data_finder[year__custom][4]": 2020,
+                    "data_finder[coo__displayType]": "all",
+                    "data_finder[year__]": "",
+                    "data_finder[coo__]": "",
+                    "data_finder[advanced__]": "",
+                    "data_finder[submit]": ""
+                }
+            },
+            "refugee_returnees": {
+                "params": {
+                    "data-finder": "on",
+                    "data_finder[dataGroup]": "solutions",
+                    "data_finder[dataset]": "solutionsReturnees",
+                    "data_finder[displayType]": "totals",
+                    "data_finder[year__filterType]": "custom",
+                    "data_finder[year__custom][0]": 2024,
+                    "data_finder[year__custom][1]": 2023,
+                    "data_finder[year__custom][2]": 2022,
+                    "data_finder[year__custom][3]": 2021,
+                    "data_finder[year__custom][4]": 2020,
+                    "data_finder[coo__displayType]": "all",
+                    "data_finder[coa__displayType]": "all",
+                    "data_finder[year__]": "",
+                    "data_finder[coo__]": "",
+                    "data_finder[coa__]": "",
+                    "data_finder[advanced__]": "",
+                    "data_finder[submit]": ""
+                }
+            },
+            "refugee_naturalization": {
+                "params": {
+                    "data-finder": "on",
+                    "data_finder[dataGroup]": "solutions",
+                    "data_finder[dataset]": "solutionsNaturalization",
+                    "data_finder[year__filterType]": "custom",
+                    "data_finder[year__custom][0]": 2024,
+                    "data_finder[year__custom][1]": 2023,
+                    "data_finder[year__custom][2]": 2022,
+                    "data_finder[year__custom][3]": 2021,
+                    "data_finder[year__custom][4]": 2020,
+                    "data_finder[coo__displayType]": "all",
+                    "data_finder[coa__displayType]": "all",
+                    "data_finder[year__]": "",
+                    "data_finder[coo__]": "",
+                    "data_finder[coa__]": "",
+                    "data_finder[advanced__]": "",
+                    "data_finder[submit]": ""
+                }
+            },
+            "resettlement_submission_requests": {
+                "params": {
+                    "data-finder": "on",
+                    "data_finder[dataGroup]": "solutions",
+                    "data_finder[dataset]": "solutionsSubmissions",
+                    "data_finder[displayType]": "totals",
+                    "data_finder[year__custom][0]": 2025,
+                    "data_finder[year__custom][1]": 2024,
+                    "data_finder[year__custom][2]": 2023,
+                    "data_finder[year__custom][3]": 2022,
+                    "data_finder[year__custom][4]": 2021,
+                    "data_finder[coo__displayType]": "all",
+                    "data_finder[coa__displayType]": "all",
+                    "data_finder[cor__displayType]": "all",
+                    "data_finder[year__]": "",
+                    "data_finder[coo__]": "",
+                    "data_finder[coa__]": "",
+                    "data_finder[cor__]": "",
+                    "data_finder[advanced__]": "",
+                    "data_finder[submit]": ""
+                }
+            },
+            "resettlement_submissions": {
+                "params": {
+                    "data-finder": "on",
+                    "data_finder[dataGroup]": "solutions",
+                    "data_finder[dataset]": "solutionsResettlement",
+                    "data_finder[year__filterType]": "custom",
+                    "data_finder[year__custom][0]": 2024,
+                    "data_finder[year__custom][1]": 2023,
+                    "data_finder[year__custom][2]": 2022,
+                    "data_finder[year__custom][3]": 2021,
+                    "data_finder[year__custom][4]": 2020,
+                    "data_finder[coo__displayType]": "all",
+                    "data_finder[cor__displayType]": "all",
+                    "data_finder[year__]": "",
+                    "data_finder[coo__]": "",
+                    "data_finder[cor__]": "",
+                    "data_finder[advanced__]": "",
+                    "data_finder[submit]": ""
+                }
+            },
+            "resettlement_departures": {
+                "params": {
+                    "data-finder": "on",
+                    "data_finder[dataGroup]": "solutions",
+                    "data_finder[dataset]": "solutionsDepartures",
+                    "data_finder[year__custom][0]": 2025,
+                    "data_finder[year__custom][1]": 2024,
+                    "data_finder[year__custom][2]": 2023,
+                    "data_finder[year__custom][3]": 2022,
+                    "data_finder[year__custom][4]": 2021,
+                    "data_finder[coo__displayType]": "all",
+                    "data_finder[coa__displayType]": "all",
+                    "data_finder[cor__displayType]": "all",
+                    "data_finder[year__]": "",
+                    "data_finder[coo__]": "",
+                    "data_finder[coa__]": "",
+                    "data_finder[cor__]": "",
+                    "data_finder[advanced__]": "",
+                    "data_finder[submit]": ""
+                }
+            },
+            "resettlement_needs": {
+                "params": {
+                    "data-finder": "on",
+                    "data_finder[dataGroup]": "solutions",
+                    "data_finder[dataset]": "solutionsNeeds",
+                    "data_finder[year__custom][0]": 2025,
+                    "data_finder[year__custom][1]": 2024,
+                    "data_finder[year__custom][2]": 2023,
+                    "data_finder[year__custom][3]": 2022,
+                    "data_finder[year__custom][4]": 2021,
+                    "data_finder[coo__displayType]": "all",
+                    "data_finder[coa__displayType]": "all",
+                    "data_finder[year__]": "",
+                    "data_finder[coo__]": "",
+                    "data_finder[coa__]": "",
+                    "data_finder[advanced__]": "",
+                    "data_finder[submit]": ""
+                }
+            }
+        }
+    }
+}
