@@ -12,6 +12,10 @@
         "input_dir": "data/bronze",
         "output_dir": "data/silver"
     },
+    "ProcessUnhcrIdpidmc":{
+        "input_dir": "data/bronze",
+        "output_dir": "data/silver"
+    },
     "ProcessUnhcrRefugeeNaturalization":{
         "input_dir": "data/bronze",
         "output_dir": "data/silver"
