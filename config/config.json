@@ -20,6 +20,10 @@
         "input_dir": "data/bronze",
         "output_dir": "data/silver"
     },
+    "ProcessUnhcrIdpreturnees":{
+        "input_dir": "data/bronze",
+        "output_dir": "data/silver"
+    },
     "FetchData": {
         "output_dir": "data/raw",
         "base_url": "https://www.unhcr.org/refugee-statistics/file-download/",
