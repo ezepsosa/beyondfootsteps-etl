@@ -48,6 +48,14 @@
         "input_dir": "data/bronze",
         "output_dir": "data/silver"
     },
+    "ProcessUnhcrResettlementSubmissionsRequests":{
+        "input_dir": "data/bronze",
+        "output_dir": "data/silver"
+    },
+    "ProcessUnhcrResettlementSubmissions":{
+        "input_dir": "data/bronze",
+        "output_dir": "data/silver"
+    },
     "FetchData": {
         "output_dir": "data/raw",
         "base_url": "https://www.unhcr.org/refugee-statistics/file-download/",
