@@ -147,7 +147,9 @@ schema_UNHCR_resettlementsubmissionrequests = StructType([
     StructField("Country of Origin ISO", StringType(), True),
     StructField("Country of Resettlement ISO", StringType(), True),
     StructField("Cases", IntegerType(), True),
-    StructField("Persons", IntegerType(), True)
+    StructField("Persons", IntegerType(), True),
+    StructField("Month", StringType(), True)
+
 ])
 
 schema_UNHCR_resettlementsubmissions = StructType([
@@ -156,5 +158,7 @@ schema_UNHCR_resettlementsubmissions = StructType([
     StructField("Country of Origin", StringType(), True),
     StructField("Country of Resettlement ISO", StringType(), True),
     StructField("Country of Origin ISO", StringType(), True),
-    StructField("Total", IntegerType(), True)
+    StructField("Total", IntegerType(), True),
+    StructField("Month", StringType(), True)
+
 ])

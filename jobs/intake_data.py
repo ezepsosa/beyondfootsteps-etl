@@ -1,8 +1,6 @@
 import os
-from pathlib import Path
 from argparse import Namespace, ArgumentParser
-from sparklibs.job import BaseJob
-from pyspark.sql import SparkSession
+from sparklibs.job import BaseJob, Configuration
 from pyspark.sql.functions import lit
 from datetime import datetime
 from typing import Tuple
@@ -12,28 +10,27 @@ from data.utils.dataSchemas import *
 class IntakeData(BaseJob):
     
     def _config_args(self, parser: ArgumentParser) -> Namespace:
-        parser.add_argument('--file', type=str, required=True)
-        self.spark = SparkSession.builder \
-    .appName("FootstepsAtlas ETL") \
-    .getOrCreate()
+        parser.add_argument('--file', type=str, required=False)
         return super()._config_args(parser)
     
-    def run(self, args: Namespace):
-        if args.file == "all":
-            directory = str(Path(__file__).resolve().parents[1] / "data/raw")
-            for file in os.listdir(directory):
-                self.process_bronze_layer(file)
+    def run(self, configuration: Configuration, args: Namespace):
+        self._load_config(args.configuration)
+        input_dir = configuration.__getattribute__('input_dir')
+        output_dir = configuration.__getattribute__('output_dir')
+        if not args.file:
+            for file in os.listdir(input_dir):
+                self.process_bronze_layer(file, input_dir, output_dir)
         else:
             self.process_bronze_layer(args.file)
         
-    def process_bronze_layer(self, file):
+    def process_bronze_layer(self, file, input_dir, output_dir):
         (file_name, origin, entity) = self.extract_data_from_path(file)
         self.logger.info(f'File to process: {file_name}')
         self.logger.info(f'Origin: {origin}')
         self.logger.info(f'Entity: {entity}')
         
-        input_path = str(Path(__file__).resolve().parents[1] / "data/raw" / file_name)
-        output_path = str(Path(__file__).resolve().parents[1] / "data/bronze"/origin/entity)
+        input_path = f'{input_dir}/{file_name}'
+        output_path = f'{output_dir}/{origin}/{entity}'
         defined_schema = eval(f'schema_{origin}_{entity}')
         
         df = self.spark.read.option('header', 'true') \
