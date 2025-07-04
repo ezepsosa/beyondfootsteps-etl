@@ -162,3 +162,22 @@ schema_UNHCR_resettlementsubmissions = StructType([
     StructField("Month", StringType(), True)
 
 ])
+
+schema_WorldBank_worlddevelopmentindicators = StructType([
+    StructField("Series Name", StringType(), True),
+    StructField("Series Code", StringType(), True),
+    StructField("Country Name", StringType(), True),
+    StructField("Country Code", StringType(), True),
+    StructField("1990 [YR1990]", IntegerType(), True),
+    StructField("2000 [YR2000]", IntegerType(), True),
+    StructField("2015 [YR2015]", IntegerType(), True),
+    StructField("2016 [YR2016]", IntegerType(), True),
+    StructField("2017 [YR2017]", IntegerType(), True),
+    StructField("2018 [YR2018]", IntegerType(), True),
+    StructField("2019 [YR2019]", IntegerType(), True),
+    StructField("2020 [YR2020]", IntegerType(), True),
+    StructField("2021 [YR2021]", IntegerType(), True),
+    StructField("2022 [YR2022]", IntegerType(), True),
+    StructField("2023 [YR2023]", IntegerType(), True),
+    StructField("2024 [YR2024]", IntegerType(), True)
+])

@@ -67,13 +67,18 @@
     "output_dir": "data/silver"
   },
   "FetchData": {
+    "properties": {
     "output_dir": "data/raw",
-    "base_url": "https://www.unhcr.org/refugee-statistics/file-download/",
     "headers": {
       "User-Agent": "Mozilla/5.0",
       "Accept": "application/zip,application/octet-stream;q=0.9,*/*;q=0.8",
       "Referer": "https://www.unhcr.org/refugee-statistics/download"
+      }
     },
+    "sources": {
+      "UNHCR": {
+        "string_not_included_in_file_name": "footnotes",
+        "base_url": "https://www.unhcr.org/refugee-statistics/file-download/",
     "datasets": {
       "population": {
         "params": {
@@ -350,6 +355,22 @@
           "data_finder[coa__]": "",
           "data_finder[advanced__]": "",
           "data_finder[submit]": ""
+            }
+          }
+        }
+      },
+      "WorldBank": {
+        "string_not_included_in_file_name": "not_defined",
+        "base_url": "https://databank.worldbank.org/AjaxDownload/FileDownloadHandler.ashx",
+        "datasets": {
+          "worlddevelopmentindicators": {
+            "params": {
+              "filename": "P_cbb0c212-f820-4b24-aa9f-18b3b06934eb.xlsx",
+              "filetype": "EXCEL",
+              "language": "en",
+              "displayfile": "P_Data_Extract_From_World_Development_Indicators.xlsx"
+            }
+          }
         }
       }
     }

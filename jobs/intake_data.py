@@ -4,6 +4,7 @@ from sparklibs.job import BaseJob, Configuration
 from pyspark.sql.functions import lit
 from datetime import datetime
 from typing import Tuple
+import re
 from data.utils.dataSchemas import *
 
 
@@ -53,10 +54,10 @@ class IntakeData(BaseJob):
         file_name = os.path.basename(path)
         file_name_parts = file_name.split("_")
         
-        if len(file_name_parts) < 3:
+        if len(file_name_parts) < 2:
             raise Exception(f'invalid file name: {file_name}')
         origin = file_name_parts[0]
-        entity = file_name_parts[1]
+        entity = file_name_parts[1].split(".")[0]
         return file_name, origin, entity
     
 if __name__ == '__main__':
