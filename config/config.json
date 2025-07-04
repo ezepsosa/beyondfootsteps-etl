@@ -66,6 +66,10 @@
     "input_dir": "data/bronze",
     "output_dir": "data/silver"
   },
+  "ProcessWorldBankWorldDevelopmentIndicators":{
+    "input_dir": "data/bronze",
+    "output_dir": "data/silver"
+  },
   "FetchData": {
     "properties": {
     "output_dir": "data/raw",

@@ -11,6 +11,7 @@ from process_unhcr_resettlementdepartures import ProcessUnhcrResettlementDepartu
 from process_unhcr_resettlementneeds import ProcessUnhcrResettlementNeeds
 from process_unhcr_resettlementsubmissions import  ProcessUnhcrResettlementSubmissions
 from process_unhcr_resettlementsubmissionsrequests import ProcessUnhcrResettlementSubmissionsRequests
+from process_worldbank_worlddevelopmentindicators import ProcessWorldBankWorldDevelopmentIndicators
 
 if __name__ == "__main__":
     ProcessUnhcrAsylumApplications().execute()
@@ -26,3 +27,4 @@ if __name__ == "__main__":
     ProcessUnhcrResettlementNeeds().execute()
     ProcessUnhcrResettlementSubmissions().execute()
     ProcessUnhcrResettlementSubmissionsRequests().execute()
+    ProcessWorldBankWorldDevelopmentIndicators().execute()
