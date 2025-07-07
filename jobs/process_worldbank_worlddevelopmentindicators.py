@@ -14,13 +14,29 @@ class ProcessWorldBankWorldDevelopmentIndicators(SilverProcessor):
                          id_column_name="Country Code")
 
     def _preprocess_dataframe(self, df: DataFrame) -> DataFrame:
-        return df.melt(ids=["Country Code", "Country Name", "intakeDate"],
-                       values=[
-                           "2000 [YR2000]", "2015 [YR2015]", "2016 [YR2016]",
-                           "2017 [YR2017]", "2018 [YR2018]", "2019 [YR2019]",
-                           "2020 [YR2020]", "2021 [YR2021]", "2022 [YR2022]",
-                           "2023 [YR2023]", "2024 [YR2024]"
-                       ], valueColumnName="year", variableColumnName="population")
+        return df.withColumnRenamed("1990 [YR1990]", "1990") \
+            .withColumnRenamed("2000 [YR2000]", "2000") \
+            .withColumnRenamed("2015 [YR2015]", "2015") \
+            .withColumnRenamed("2016 [YR2016]", "2016") \
+            .withColumnRenamed("2017 [YR2017]", "2017") \
+            .withColumnRenamed("2018 [YR2018]", "2018") \
+            .withColumnRenamed("2019 [YR2019]", "2019") \
+            .withColumnRenamed("2020 [YR2020]", "2020") \
+            .withColumnRenamed("2021 [YR2021]", "2021") \
+            .withColumnRenamed("2022 [YR2022]", "2022") \
+            .withColumnRenamed("2023 [YR2023]", "2023") \
+            .withColumnRenamed("2024 [YR2024]", "2024") \
+                .melt(
+            ids=["Country Code", "Country Name", "intakeDate"],
+            values=[
+                "2000", "2015", "2016",
+                "2017", "2018", "2019",
+                "2020", "2021", "2022",
+                "2023", "2024"
+            ],
+            variableColumnName="year",
+            valueColumnName="population"
+        )
 
 
 if __name__ == "__main__":
