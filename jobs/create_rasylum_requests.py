@@ -19,7 +19,7 @@ class ResettlementSummaryJob(GoldJob):
 
         df_asylum_requests = df_asylumapplications.alias("applications").join(
             df_worldpopulation.alias("population"), on=[col("applications.year") == col("population.year"), col("applications.country_of_asylum_iso") == col("population.country_code")],
-            how='left').select(col('applications.year'), col('applications.country_of_asylum_iso'), col('applications.applied'), col('population.population')).withColumn("applied_per_100k", (col('applications.applied') / col('population.population') * 100000))
+            how='inner').select(col('applications.year'), col('applications.country_of_asylum_iso'), col('applications.applied'), col('population.population')).withColumn("applied_per_100k", (col('applications.applied') / col('population.population') * 100000))
         
         self._save_in_database(df_asylum_requests, "asylum_requests_kpi", configuration)
 
