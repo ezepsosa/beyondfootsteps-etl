@@ -9,6 +9,8 @@ class IdpIdmcJob(GoldJob):
 
     def run(self, configuration: Configuration, args: Namespace):
 
+        kpi_name = 'idp_displacement_kpi'
+
         # DATAFRAMES LOAD
 
         df_idpreturnees = self._get_last_version_from_silver(configuration,
@@ -30,8 +32,13 @@ class IdpIdmcJob(GoldJob):
                                 col('idpreturnees.country_of_origin_iso'),
                                 col('idpreturnees.total'),
                                 col('displacement_rate_per_100k'))
+        
 
-        self._save_in_database(df_displacement, 'idp_displacement_kpi',
+        output_directory = f'{configuration.__getattribute__('output_dir')}/{kpi_name}'
+        
+        df_displacement.write.parquet(output_directory, mode='overwrite')
+
+        self._save_in_database(df_displacement, kpi_name,
                                configuration)
 
 

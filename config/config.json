@@ -8,22 +8,27 @@
     }
   },
   "ResettlementSummaryJob": {
-    "input_dir": "data/silver"
+    "input_dir": "data/silver",
+    "output_dir": "data/gold"
   },
   "RefugeeNaturalizationJob": {
-    "input_dir": "data/silver"
+    "input_dir": "data/silver",
+    "output_dir": "data/gold"
   },
   "AsylumRequestsJob": {
-    "input_dir": "data/silver"
+    "input_dir": "data/silver",
+    "output_dir": "data/gold"
   },
   "AsylumDecisionsJobs":{
-    "input_dir": "data/silver"
+    "input_dir": "data/silver",
+    "output_dir": "data/gold"
   },
   "IdpReturneesJob": {
-    "input_dir": "data/silver"
+    "input_dir": "data/silver",
+    "output_dir": "data/gold"
   },
-  "IdpIdmcJob":{
-    "input_dir": "data/silver"
+    "input_dir": "data/silver",
+    "output_dir": "data/gold"
   },
   "IntakeData": {
     "input_dir": "data/raw",

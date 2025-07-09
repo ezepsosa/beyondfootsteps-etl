@@ -9,6 +9,8 @@ class IdpReturneesJob(GoldJob):
 
     def run(self, configuration: Configuration, args: Namespace):
 
+        kpi_name = 'idp_returnees_kpi'
+
         # DATAFRAMES LOAD
 
         df_idpreturnees = self._get_last_version_from_silver(
@@ -29,7 +31,11 @@ class IdpReturneesJob(GoldJob):
                                 col('refugeereturnees.total').alias('refugees_returnees'),
                                 col('idpreturnees.by_date'))
 
-        self._save_in_database(df_idp, 'idp_returnees_kpi',
+        output_directory = f'{configuration.__getattribute__('output_dir')}/{kpi_name}'
+        
+        df_idp.write.parquet(output_directory, mode='overwrite')
+
+        self._save_in_database(df_idp, kpi_name,
                                configuration)
 
 

@@ -196,6 +196,7 @@ cython_debug/
 raw
 bronze
 silver
+gold
 
 #vscode config
 .vscode

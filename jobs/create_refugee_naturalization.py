@@ -9,6 +9,8 @@ from sparklibs.job import GoldJob, Configuration
 
 class RefugeeNaturalizationJob(GoldJob):
     def run(self, configuration: Configuration, args: Namespace):
+        
+        kpi_name = 'refugee_naturalization_kpi'
 
         # DATAFRAMES LOAD
 
@@ -19,8 +21,12 @@ class RefugeeNaturalizationJob(GoldJob):
         df_naturalization = df_naturalization.withColumn('previous_total', lag('total').over(window_spec)) \
             .withColumn('naturalization_change', try_divide((col('total') - col('previous_total')),col('previous_total'))) \
             .drop(col('previous_total'))
+        
+        output_directory = f'{configuration.__getattribute__('output_dir')}/{kpi_name}'
+        
+        df_naturalization.write.parquet(output_directory, mode='overwrite')
 
-        self._save_in_database(df_naturalization, 'refugee_naturalization_kpi', configuration)
+        self._save_in_database(df_naturalization, kpi_name, configuration)
 
         
 if __name__ == '__main__':

@@ -8,6 +8,8 @@ from sparklibs.job import GoldJob, Configuration
 class AsylumRequestsJob(GoldJob):
     def run(self, configuration: Configuration, args: Namespace):
 
+        kpi_name = 'asylum_requests_kpi'
+
         # DATAFRAMES LOAD
 
         df_asylumapplications = self._get_last_version_from_silver(configuration, origin='UNHCR',
@@ -21,8 +23,11 @@ class AsylumRequestsJob(GoldJob):
             df_worldpopulation.alias('population'), on=[col('applications.year') == col('population.year'), col('applications.country_of_asylum_iso') == col('population.country_code')],
             how='inner').select(col('applications.year'), col('applications.country_of_asylum_iso'), col('applications.applied'), col('population.population')).withColumn('applied_per_100k', try_divide(col('applications.applied'), col('population.population')) * lit(100000))
         
+        output_directory = f'{configuration.__getattribute__('output_dir')}/{kpi_name}'
         
-        self._save_in_database(df_asylum_requests, 'asylum_requests_kpi', configuration)
+        df_asylum_requests.write.parquet(output_directory, mode='overwrite')
+
+        self._save_in_database(df_asylum_requests, kpi_name, configuration)
 
         
 if __name__ == '__main__':

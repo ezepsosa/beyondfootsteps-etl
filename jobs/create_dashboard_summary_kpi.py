@@ -5,11 +5,8 @@ from pyspark.sql.functions import col, when, round
 from sparklibs.job import GoldJob, Configuration
 
 
-class ResettlementSummaryJob(GoldJob):
+class DashboardSummaryJob(GoldJob):
     def run(self, configuration: Configuration, args: Namespace):
-
-        kpi_name = 'resettlements_summary_kpi'
-
 
         # DATAFRAMES LOAD
 
@@ -21,6 +18,30 @@ class ResettlementSummaryJob(GoldJob):
                                                                       entity='resettlementdepartures')
         df_resettlementneeds = self._get_last_version_from_silver(configuration, origin='UNHCR',
                                                                   entity='resettlementneeds')
+        df_asylumdecisions = self._get_last_version_from_silver(
+            configuration, origin='UNHCR', entity='asylumdecisions')
+
+        df_asylumapplications = self._get_last_version_from_silver(configuration, origin='UNHCR',
+                                                                               entity='asylumapplications')
+        df_worldpopulation = self._get_last_version_from_silver(configuration, origin='WorldBank',
+                                                                        entity='worlddevelopmentindicators')
+
+        df_idpreturnees = self._get_last_version_from_silver(configuration,
+                                                             origin='UNHCR',
+                                                             entity='idpidmc')
+        df_population = self._get_last_version_from_silver(
+            configuration,
+            origin='WorldBank',
+            entity='worlddevelopmentindicators')
+        
+
+        df_idpreturnees = self._get_last_version_from_silver(
+            configuration, origin='UNHCR', entity='idpreturnees')
+        df_refugeereturnees = self._get_last_version_from_silver(configuration,
+                                                        origin='UNHCR',
+                                                        entity='refugeereturnees').groupBy('year', 'country_of_origin_iso').agg(sum('total').alias('total'))
+        
+        df_naturalization = self._get_last_version_from_silver(configuration, origin='UNHCR', entity='refugeenaturalization').select('id_refugeenaturalization', 'year', 'country_of_asylum', 'country_of_asylum_iso', 'country_of_origin', 'country_of_origin_iso', 'total', 'intake_date')
 
         # TABLES JOIN
 
@@ -74,12 +95,7 @@ class ResettlementSummaryJob(GoldJob):
             round(when(col('submissions_total') > 0, col('persons') / col('submissions_total')), 3)).withColumn(
             'realization_rate',
             round(when(col('submissions_total') > 0, col('departures_total') / col('submissions_total')), 3))
-        
-        output_directory = f'{configuration.__getattribute__('output_dir')}/{kpi_name}'
-        
-        df_requests_departures_needs_submissions.write.parquet(output_directory, mode='overwrite')
-
-        self._save_in_database(df_requests_departures_needs_submissions, kpi_name, configuration)
+        self._save_in_database(df_requests_departures_needs_submissions, 'resettlements_summary_kpi', configuration)
 
 if __name__ == '__main__':
-    ResettlementSummaryJob().execute(),
+    DashboardSummaryJob().execute(),
