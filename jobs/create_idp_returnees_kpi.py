@@ -1,6 +1,6 @@
 from argparse import Namespace
 
-from pyspark.sql.functions import col, when, round
+from pyspark.sql.functions import col, sum
 
 from sparklibs.job import GoldJob, Configuration
 
@@ -13,21 +13,20 @@ class ResettlementSummaryJob(GoldJob):
 
         df_idpreturnees = self._get_last_version_from_silver(
             configuration, origin="UNHCR", entity="idpreturnees")
-        df_idpidmc = self._get_last_version_from_silver(configuration,
+        df_refugeereturnees = self._get_last_version_from_silver(configuration,
                                                         origin="UNHCR",
-                                                        entity="idpidmc")
-
+                                                        entity="refugeereturnees").groupBy("year", "country_of_origin_iso").agg(sum("total").alias("total"))
         # TABLES JOIN
 
-        df_idp = df_idpreturnees.alias("returnees").join(
-            df_idpidmc.alias("idmc"),
-            on=[col("idmc.id_idpidmc") == col("returnees.id_idpreturnees")],
-            how='inner').select(col('returnees.id_idpreturnees'),
-                                col('returnees.year'),
-                                col('returnees.country_of_origin'),
-                                col('returnees.total').alias('idp_returnees'),
-                                col('idmc.total').alias('idp_idmc'),
-                                col("idmc.by_date"))
+        df_idp = df_idpreturnees.alias("idpreturnees").join(
+            df_refugeereturnees.alias("refugeereturnees"),
+            on=[(col("refugeereturnees.year") == col("idpreturnees.year")) & (col("refugeereturnees.country_of_origin_iso") == col("idpreturnees.country_of_origin_iso"))],
+            how='left').select(col('idpreturnees.id_idpreturnees'),
+                                col('idpreturnees.year'),
+                                col('idpreturnees.country_of_origin'),
+                                col('idpreturnees.total').alias('idp_returnees'),
+                                col('refugeereturnees.total').alias('refugees_returnees'),
+                                col("idpreturnees.by_date"))
 
         self._save_in_database(df_idp, "returnees_kpi",
                                configuration)
