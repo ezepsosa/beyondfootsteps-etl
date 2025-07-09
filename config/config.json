@@ -10,6 +10,21 @@
   "ResettlementSummaryJob": {
     "input_dir": "data/silver"
   },
+  "RefugeeNaturalizationJob": {
+    "input_dir": "data/silver"
+  },
+  "AsylumRequestsJob": {
+    "input_dir": "data/silver"
+  },
+  "AsylumDecisionsJobs":{
+    "input_dir": "data/silver"
+  },
+  "IdpReturneesJob": {
+    "input_dir": "data/silver"
+  },
+  "IdpIdmcJob":{
+    "input_dir": "data/silver"
+  },
   "IntakeData": {
     "input_dir": "data/raw",
     "output_dir": "data/bronze"

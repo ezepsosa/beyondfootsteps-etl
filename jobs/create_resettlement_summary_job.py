@@ -10,14 +10,14 @@ class ResettlementSummaryJob(GoldJob):
 
         # DATAFRAMES LOAD
 
-        df_resettlementsubmissionrequests = self._get_last_version_from_silver(configuration, origin="UNHCR",
-                                                                               entity="resettlementsubmissionrequests")
-        df_resettlementsubmissions = self._get_last_version_from_silver(configuration, origin="UNHCR",
-                                                                        entity="resettlementsubmissions")
-        df_resettlementdepartues = self._get_last_version_from_silver(configuration, origin="UNHCR",
-                                                                      entity="resettlementdepartures")
-        df_resettlementneeds = self._get_last_version_from_silver(configuration, origin="UNHCR",
-                                                                  entity="resettlementneeds")
+        df_resettlementsubmissionrequests = self._get_last_version_from_silver(configuration, origin='UNHCR',
+                                                                               entity='resettlementsubmissionrequests')
+        df_resettlementsubmissions = self._get_last_version_from_silver(configuration, origin='UNHCR',
+                                                                        entity='resettlementsubmissions')
+        df_resettlementdepartues = self._get_last_version_from_silver(configuration, origin='UNHCR',
+                                                                      entity='resettlementdepartures')
+        df_resettlementneeds = self._get_last_version_from_silver(configuration, origin='UNHCR',
+                                                                  entity='resettlementneeds')
 
         # TABLES JOIN
 
@@ -60,7 +60,7 @@ class ResettlementSummaryJob(GoldJob):
             col('rdn.total_needs'), col('sub.total').alias('submissions_total'))
 
         df_clean = df_requests_departures_needs_submissions.fillna(
-            {"departures_total": 0, "submissions_total": 0, "total_needs": 0})
+            {'departures_total': 0, 'submissions_total': 0, 'total_needs': 0})
 
         df_clean = df_clean.withColumn('resettlement_gap', col('total_needs') - col('departures_total')).withColumn(
             'coverage_rate',
@@ -71,7 +71,7 @@ class ResettlementSummaryJob(GoldJob):
             round(when(col('submissions_total') > 0, col('persons') / col('submissions_total')), 3)).withColumn(
             'realization_rate',
             round(when(col('submissions_total') > 0, col('departures_total') / col('submissions_total')), 3))
-        self._save_in_database(df_requests_departures_needs_submissions, "unhcr_resettlements_summary", configuration)
+        self._save_in_database(df_requests_departures_needs_submissions, 'resettlements_summary_kpi', configuration)
 
 if __name__ == '__main__':
     ResettlementSummaryJob().execute(),
