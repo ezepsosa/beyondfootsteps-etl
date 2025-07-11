@@ -3,9 +3,6 @@
 ![Alpha](https://img.shields.io/badge/version-alpha-blue?logo=github)
 ![Maintainer](https://img.shields.io/badge/maintainer-ezepsosa-lightgrey?logo=github)
 ![Repo](https://img.shields.io/badge/repo-beyondfootsteps--etl-181717?logo=github)
-![License](https://img.shields.io/github/license/ezepsosa/beyondfootsteps-etl?logo=github)
-![Issues](https://img.shields.io/github/issues/ezepsosa/beyondfootsteps-etl?logo=github)
-![Last Commit](https://img.shields.io/github/last-commit/ezepsosa/beyondfootsteps-etl?logo=github)
 
 ## 🚀 Introduction
 
