@@ -132,6 +132,12 @@ class GoldJob(BaseJob):
         df = self.spark.read.parquet(input_dir)
         self.logger.info(f'Loaded silver layer of {entity} entity which has {df.count()} rows')
         return df
+    
+    def _get_last_version_from_gold(self, config: Configuration, entity: str) -> DataFrame:
+        output_dir = f'{config.__getattribute__('output_dir')}/{entity}'
+        df = self.spark.read.parquet(output_dir)
+        self.logger.info(f'Loaded gold layer of {entity} gold entity which has {df.count()} rows')
+        return df
 
     def _save_in_database(self, df: DataFrame, table_name: str, config: Configuration):
         self.logger.info(f'Saving {table_name} into database')
