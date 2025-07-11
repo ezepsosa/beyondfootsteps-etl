@@ -27,7 +27,11 @@
     "input_dir": "data/silver",
     "output_dir": "data/gold"
   },
+  "IdpIdmcJob":{
     "input_dir": "data/silver",
+    "output_dir": "data/gold"
+  },
+  "DashboardSummaryJob":{
     "output_dir": "data/gold"
   },
   "IntakeData": {
