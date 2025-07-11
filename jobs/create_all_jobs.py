@@ -4,6 +4,7 @@ from create_asylum_decisions import AsylumDecisionsJobs
 from create_asylum_requests import AsylumRequestsJob
 from create_idp_idmc_kpi import IdpIdmcJob
 from create_idp_returnees_kpi import IdpReturneesJob
+from create_dashboard_summary_kpi import DashboardSummaryJob
 
 
 if __name__ == "__main__":
@@ -13,3 +14,4 @@ if __name__ == "__main__":
     AsylumRequestsJob().execute()
     IdpIdmcJob().execute()
     IdpReturneesJob().execute()
+    DashboardSummaryJob().execute()

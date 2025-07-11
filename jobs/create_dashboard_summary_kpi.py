@@ -1,101 +1,97 @@
 from argparse import Namespace
 
-from pyspark.sql.functions import col, when, round
-
+from pyspark.sql.functions import col, sum as spark_sum, avg as spark_avg
 from sparklibs.job import GoldJob, Configuration
 
 
 class DashboardSummaryJob(GoldJob):
     def run(self, configuration: Configuration, args: Namespace):
+        kpi_name = "dashboard_summary_kpi"
 
         # DATAFRAMES LOAD
+        df_asylum_decisions_kpi = self._get_last_version_from_gold(
+            configuration, entity="asylum_decisions_kpi"
+        )
+        df_asylum_requests_kpi = self._get_last_version_from_gold(
+            configuration, entity="asylum_requests_kpi"
+        )
+        df_idp_displacement_kpi = self._get_last_version_from_gold(
+            configuration, entity="idp_displacement_kpi"
+        )
+        df_idp_returnees_kpi = self._get_last_version_from_gold(
+            configuration, entity="idp_returnees_kpi"
+        )
+        df_refugee_naturalization_kpi = self._get_last_version_from_gold(
+            configuration, entity="refugee_naturalization_kpi"
+        )
+        df_resettlements_summary_kpi = self._get_last_version_from_gold(
+            configuration, entity="resettlements_summary_kpi"
+        )
 
-        df_resettlementsubmissionrequests = self._get_last_version_from_silver(configuration, origin='UNHCR',
-                                                                               entity='resettlementsubmissionrequests')
-        df_resettlementsubmissions = self._get_last_version_from_silver(configuration, origin='UNHCR',
-                                                                        entity='resettlementsubmissions')
-        df_resettlementdepartues = self._get_last_version_from_silver(configuration, origin='UNHCR',
-                                                                      entity='resettlementdepartures')
-        df_resettlementneeds = self._get_last_version_from_silver(configuration, origin='UNHCR',
-                                                                  entity='resettlementneeds')
-        df_asylumdecisions = self._get_last_version_from_silver(
-            configuration, origin='UNHCR', entity='asylumdecisions')
+        # RENAME AND SELECT STANDARDIZED FIELDS
+        df_asylum_requests = df_asylum_requests_kpi.groupBy(
+            "year", col("country_of_asylum_iso").alias("country_iso")
+        ).agg(
+            spark_sum("applied").alias("total_applied"),
+            spark_avg("applied_per_100k").alias("applied_per_100k"),
+        )
 
-        df_asylumapplications = self._get_last_version_from_silver(configuration, origin='UNHCR',
-                                                                               entity='asylumapplications')
-        df_worldpopulation = self._get_last_version_from_silver(configuration, origin='WorldBank',
-                                                                        entity='worlddevelopmentindicators')
+        df_asylum_decisions = df_asylum_decisions_kpi.groupBy(
+            "year", col("country_of_asylum_iso").alias("country_iso")
+        ).agg(spark_avg("acceptance_rate").alias("acceptance_rate"))
 
-        df_idpreturnees = self._get_last_version_from_silver(configuration,
-                                                             origin='UNHCR',
-                                                             entity='idpidmc')
-        df_population = self._get_last_version_from_silver(
-            configuration,
-            origin='WorldBank',
-            entity='worlddevelopmentindicators')
-        
+        df_idp_displacement = df_idp_displacement_kpi.groupBy(
+            "year", col("country_of_origin_iso").alias("country_iso")
+        ).agg(
+            spark_sum("total").alias("internal_displacement_total"),
+            spark_avg("displacement_rate_per_100k").alias("displacement_rate_per_100k"),
+        )
 
-        df_idpreturnees = self._get_last_version_from_silver(
-            configuration, origin='UNHCR', entity='idpreturnees')
-        df_refugeereturnees = self._get_last_version_from_silver(configuration,
-                                                        origin='UNHCR',
-                                                        entity='refugeereturnees').groupBy('year', 'country_of_origin_iso').agg(sum('total').alias('total'))
-        
-        df_naturalization = self._get_last_version_from_silver(configuration, origin='UNHCR', entity='refugeenaturalization').select('id_refugeenaturalization', 'year', 'country_of_asylum', 'country_of_asylum_iso', 'country_of_origin', 'country_of_origin_iso', 'total', 'intake_date')
+        df_idp_returnees = df_idp_returnees_kpi.groupBy(
+            "year", col("country_of_origin_iso").alias("country_iso")
+        ).agg(
+            spark_sum("idp_returnees").alias("idp_returnees"),
+            spark_sum("refugees_returnees").alias("refugees_returnees"),
+        )
+
+        df_naturalization = df_refugee_naturalization_kpi.groupBy(
+            "year", col("country_of_asylum_iso").alias("country_iso")
+        ).agg(
+            spark_sum("total").alias("naturalizations_total"),
+            spark_avg("naturalization_change").alias("naturalization_change"),
+        )
+
+        df_resettlement = df_resettlements_summary_kpi.groupBy(
+            "year", col("country_of_asylum_iso").alias("country_iso")
+        ).agg(
+            spark_sum("persons").alias("resettlement_requests"),
+            spark_sum("departures_total").alias("resettlement_departures"),
+            spark_sum("submissions_total").alias("resettlement_submissions"),
+            spark_sum("total_needs").alias("resettlement_needs"),
+            spark_avg("resettlement_gap").alias("resettlement_gap"),
+            spark_avg("coverage_rate").alias("coverage_rate"),
+            spark_avg("request_vs_needs_ratio").alias("request_vs_needs_ratio"),
+            spark_avg("submissions_efficiency").alias("submissions_efficiency"),
+            spark_avg("realization_rate").alias("realization_rate"),
+        )
 
         # TABLES JOIN
+        df_displacement = (
+            df_asylum_requests.join(
+                df_asylum_decisions, on=["year", "country_iso"], how="outer"
+            )
+            .join(df_idp_displacement, on=["year", "country_iso"], how="outer")
+            .join(df_idp_returnees, on=["year", "country_iso"], how="outer")
+            .join(df_naturalization, on=["year", "country_iso"], how="outer")
+            .join(df_resettlement, on=["year", "country_iso"], how="outer")
+        )
 
-        df_requests_departures = df_resettlementsubmissionrequests.alias('requests').join(
-            df_resettlementdepartues.alias('departures'), on=[col('requests.year') == col('departures.year'),
-                                                              col('requests.country_of_asylum_iso') == col(
-                                                                  'departures.country_of_asylum_iso'),
-                                                              col('requests.country_of_origin_iso') == col(
-                                                                  'departures.country_of_origin_iso'),
-                                                              col('requests.country_of_resettlement_iso') == col(
-                                                                  'departures.country_of_resettlement_iso'), ],
-            how='left').select(col('requests.year'), col('requests.country_of_asylum'),
-                               col('requests.country_of_origin'), col('requests.country_of_resettlement'),
-                               col('requests.country_of_asylum_iso'), col('requests.country_of_origin_iso'),
-                               col('requests.country_of_resettlement_iso'), col('requests.cases'),
-                               col('requests.persons'), col('departures.total').alias('departures_total'))
+        output_directory = f"{configuration.__getattribute__('output_dir')}/{kpi_name}"
 
-        df_requests_departures_needs = df_requests_departures.alias('requests_departures').join(
-            df_resettlementneeds.alias('needs'), on=[col('requests_departures.year') == col('needs.year'),
-                                                     col('requests_departures.country_of_asylum_iso') == col(
-                                                         'needs.country_of_asylum_iso'),
-                                                     col('requests_departures.country_of_origin_iso') == col(
-                                                         'needs.country_of_origin_iso'), ], how='left').select(
-            col('requests_departures.year'), col('requests_departures.country_of_asylum'),
-            col('requests_departures.country_of_origin'), col('requests_departures.country_of_resettlement'),
-            col('requests_departures.country_of_asylum_iso'), col('requests_departures.country_of_origin_iso'),
-            col('requests_departures.country_of_resettlement_iso'), col('requests_departures.cases'),
-            col('requests_departures.persons'), col('requests_departures.departures_total'),
-            col('needs.total').alias('total_needs'))
+        df_displacement.write.parquet(output_directory, mode="overwrite")
 
-        df_requests_departures_needs_submissions = df_requests_departures_needs.alias('rdn').join(
-            df_resettlementsubmissions.alias('sub'), on=[col('rdn.year') == col('sub.year'),
-                                                         col('rdn.country_of_origin_iso') == col(
-                                                             'sub.country_of_origin_iso'),
-                                                         col('rdn.country_of_resettlement_iso') == col(
-                                                             'sub.country_of_resettlement_iso'), ], how='left').select(
-            col('rdn.year'), col('rdn.country_of_asylum'), col('rdn.country_of_origin'),
-            col('rdn.country_of_resettlement'), col('rdn.country_of_asylum_iso'), col('rdn.country_of_origin_iso'),
-            col('rdn.country_of_resettlement_iso'), col('rdn.cases'), col('rdn.persons'), col('rdn.departures_total'),
-            col('rdn.total_needs'), col('sub.total').alias('submissions_total'))
+        self._save_in_database(df_displacement, kpi_name, configuration)
 
-        df_clean = df_requests_departures_needs_submissions.fillna(
-            {'departures_total': 0, 'submissions_total': 0, 'total_needs': 0})
 
-        df_clean = df_clean.withColumn('resettlement_gap', col('total_needs') - col('departures_total')).withColumn(
-            'coverage_rate',
-            round(when(col('total_needs') > 0, col('departures_total') / col('total_needs')), 3)).withColumn(
-            'request_vs_needs_ratio',
-            round(when(col('total_needs') > 0, col('persons') / col('total_needs')), 3)).withColumn(
-            'submissions_efficiency',
-            round(when(col('submissions_total') > 0, col('persons') / col('submissions_total')), 3)).withColumn(
-            'realization_rate',
-            round(when(col('submissions_total') > 0, col('departures_total') / col('submissions_total')), 3))
-        self._save_in_database(df_requests_departures_needs_submissions, 'resettlements_summary_kpi', configuration)
-
-if __name__ == '__main__':
-    DashboardSummaryJob().execute(),
+if __name__ == "__main__":
+    DashboardSummaryJob().execute()
