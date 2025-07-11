@@ -193,10 +193,14 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 
+# Data directories
 raw
 bronze
 silver
 gold
+
+# Jupyter Notebooks
+notebooks
 
 #vscode config
 .vscode
