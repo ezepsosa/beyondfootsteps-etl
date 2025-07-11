@@ -1,81 +1,81 @@
-# beyondfootsteps-etl
-PySpark-based ETL pipeline for Footsteps Atlas. Ingests and transforms global migration, refugee, and displacement datasets into a structured bronze–silver–gold data lake for analytical and API use.
+# 🌐 beyondfootsteps-etl
 
-## (IN DEVELOPMENT) KPIS – Key Performance Indicators for Refugee Resettlement (UNHCR)
+![Alpha](https://img.shields.io/badge/version-alpha-blue?logo=github)
+![Maintainer](https://img.shields.io/badge/maintainer-ezepsosa-lightgrey?logo=github)
+![Repo](https://img.shields.io/badge/repo-beyondfootsteps--etl-181717?logo=github)
+![License](https://img.shields.io/github/license/ezepsosa/beyondfootsteps-etl?logo=github)
+![Issues](https://img.shields.io/github/issues/ezepsosa/beyondfootsteps-etl?logo=github)
+![Last Commit](https://img.shields.io/github/last-commit/ezepsosa/beyondfootsteps-etl?logo=github)
 
-This module evaluates the effectiveness and efficiency of refugee resettlement processes by combining needs, requests, submissions, and actual departures.
+## 🚀 Introduction
 
----
+beyondfootsteps-etl is a PySpark-based ETL pipeline designed for Footsteps Atlas. It ingests, transforms, and organizes global migration, refugee, and displacement datasets into a structured bronze–silver–gold data lake, enabling advanced analytics and API integrations.
 
-### 1. `persons`
-- **Description**: Total number of individuals included in resettlement requests.
-- **Source**: `resettlementsubmissionrequests` dataset.
-- **Insight**: Reflects the active demand from countries of asylum toward resettlement countries.
+## 🛠️ Technologies
 
----
+- **PySpark** for distributed data processing
+- **Poetry** for dependency management and packaging
+- **Parquet** for efficient columnar data storage
 
-### 2. `total_needs`
-- **Description**: Estimated number of individuals in need of resettlement according to UNHCR.
-- **Source**: `resettlementneeds` dataset.
-- **Insight**: Indicates the actual scale of humanitarian needs.
+## 📦 Datasets
 
----
+This pipeline leverages authoritative global migration data from:
+- **UNHCR** (United Nations High Commissioner for Refugees)
+- **WorldData** (international migration and displacement statistics)
 
-### 3. `request_vs_needs_ratio`
-- **Formula**: `persons / total_needs`
-- **Description**: Percentage of needs covered by official resettlement requests.
-- **Insight**:
-  - > 1.0 → requests exceed estimated needs (anomalous or aggressive policy).
-  - ≈ 1.0 → full coverage.
-  - < 0.5 → under-requesting relative to identified needs.
+## ⚙️ Data Processing Workflow
 
----
+1. **Fetch Data**  
+  Retrieve raw datasets directly from UNHCR and WorldData sources.
+2. **Intake Data**  
+  Load and validate raw data into the bronze layer.
+3. **Bronze Layer**  
+  Store unprocessed, raw data for traceability.
+4. **Silver Layer**  
+  Cleanse, standardize, and enrich data for analytical use.
+5. **Gold Layer**  
+  Aggregate and export final KPI tables for reporting and API consumption.
 
-### 4. `submissions_total`
-- **Description**: Number of individuals officially submitted to resettlement countries.
-- **Source**: `resettlementsubmissions` dataset.
-- **Insight**: Reflects the capacity to formalize requests into actionable submissions.
+## 📊 Exported KPIs
 
----
+This module computes and exports standardized KPIs, each available as a table in the **public** schema:
 
-### 5. `submissions_efficiency`
-- **Formula**: `persons / submissions_total`
-- **Description**: Ratio of requested individuals who were actually submitted.
-- **Insight**:
-  - ≈ 1.0 → efficient submission pipeline.
-  - < 0.5 → bottlenecks in translating requests to submissions.
+### 1. `asylum_requests_kpi`
+- **Description:** Number of asylum requests registered by country of asylum and year.
+- **Source:** UNHCR dataset: `asylum_requests_raw`.
+- **Insight:** Measures the demand for international protection.
 
----
+### 2. `asylum_decisions_kpi`
+- **Description:** Decisions on asylum requests (approved, denied, pending).
+- **Source:** UNHCR dataset: `asylum_decisions_raw`.
+- **Insight:** Reflects the effectiveness and speed of the asylum process.
 
-### 6. `departures_total`
-- **Description**: Number of individuals actually resettled.
-- **Source**: `resettlementdepartures` dataset.
-- **Insight**: Represents the tangible outcome of the resettlement process.
+### 3. `resettlements_summary_kpi`
+- **Description:** Aggregated summary of the resettlement chain: needs, requests, submissions, and departures.
+- **Source:** UNHCR datasets: `resettlement_needs_raw`, `resettlement_requests_raw`, `resettlement_submissions_raw`, `resettlement_departures_raw`.
+- **Insight:** Provides a global view of the gap between humanitarian need and effective outcome.
 
----
+### 4. `dashboard_summary_kpi`
+- **Description:** Consolidated dashboard of key KPIs (asylum, internal displacement, returns, naturalization, resettlement).
+- **Source:** Union and aggregation of all individual KPIs.
+- **Insight:** Enables a quick overview of all migration flows.
 
-### 7. `coverage_rate`
-- **Formula**: `departures_total / total_needs`
-- **Description**: Proportion of resettlement needs that were actually fulfilled.
-- **Insight**:
-  - > 1.0 → over-delivery (or possible data discrepancy).
-  - ≈ 1.0 → full impact.
-  - < 0.5 → significant unmet need.
+### 5. `idp_displacement_kpi`
+- **Description:** Count of internally displaced persons by country of origin and year.
+- **Source:** WorldData dataset: `idp_displacement_raw`.
+- **Insight:** Monitors internal displacement crises.
 
----
+### 6. `idp_returnees_kpi`
+- **Description:** Number of voluntary returns of internally displaced persons.
+- **Source:** WorldData dataset: `idp_returnees_raw`.
+- **Insight:** Assesses the capacity for return and post-crisis recovery.
 
-### 8. `resettlement_gap`
-- **Formula**: `total_needs - departures_total`
-- **Description**: Number of people who needed resettlement but didn’t receive it.
-- **Insight**: Quantifies the humanitarian gap.
-
----
-
-### 9. `realization_rate`
-- **Formula**: `departures_total / submissions_total`
-- **Description**: Percentage of submissions that led to actual departures.
-- **Insight**:
-  - ≈ 1.0 → high conversion of submissions into action.
-  - < 0.5 → high rejection or failure rate in destination countries.
+### 7. `refugee_naturalization_kpi`
+- **Description:** Number of refugees who obtain nationality in host countries.
+- **Source:** UNHCR dataset: `refugee_naturalization_raw`.
+- **Insight:** Indicator of long-term integration and access to full rights.
 
 ---
+
+## 📖 Usage
+_Usage instructions will be added soon._
