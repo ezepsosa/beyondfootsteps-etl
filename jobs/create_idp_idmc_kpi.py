@@ -45,7 +45,7 @@ class IdpIdmcJob(GoldJob):
                 col("idpreturnees.total"),
                 col("displacement_rate_per_100k"),
             )
-        )
+        ).withColumnRenamed("id_idpidmc", "id") 
 
         output_directory = f"{configuration.__getattribute__('output_dir')}/{kpi_name}"
 

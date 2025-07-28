@@ -1,6 +1,6 @@
 from argparse import Namespace
 
-from pyspark.sql.functions import col, coalesce, when, lit, round
+from pyspark.sql.functions import col, coalesce, when, lit, round, concat_ws
 
 from sparklibs.job import GoldJob, Configuration
 
@@ -78,14 +78,14 @@ class ResettlementSummaryJob(GoldJob):
             df_requests_departures_needs.alias("rdn")
             .join(df_resettlementsubmissions.alias("sub"), on=column_joins, how="outer")
             .select(
-                'year',
-                'country_of_origin_iso',
+                "year",
+                "country_of_origin_iso",
                 coalesce(
                     col("rdn.country_of_origin"), col("sub.country_of_origin")
                 ).alias("country_of_origin"),
                 col("rdn.country_of_asylum_iso"),
                 col("rdn.country_of_asylum"),
-                'country_of_resettlement_iso',
+                "country_of_resettlement_iso",
                 coalesce(
                     col("rdn.country_of_resettlement"),
                     col("sub.country_of_resettlement"),
@@ -136,6 +136,19 @@ class ResettlementSummaryJob(GoldJob):
                         col("departures_total") / col("submissions_total"),
                     ),
                     3,
+                ),
+            )
+        )
+
+        df_requests_departures_needs_submissions = (
+            df_requests_departures_needs_submissions.withColumn(
+                "id",
+                concat_ws(
+                    "_",
+                    col("year").cast("string"),
+                    col("country_of_asylum_iso"),
+                    col("country_of_origin_iso"),
+                    col("country_of_resettlement_iso"),
                 ),
             )
         )

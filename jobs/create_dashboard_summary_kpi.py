@@ -1,6 +1,6 @@
 from argparse import Namespace
 
-from pyspark.sql.functions import col, sum as spark_sum, avg as spark_avg
+from pyspark.sql.functions import col, sum as spark_sum, avg as spark_avg, concat_ws
 from sparklibs.job import GoldJob, Configuration
 
 
@@ -84,6 +84,10 @@ class DashboardSummaryJob(GoldJob):
             .join(df_idp_returnees, on=["year", "country_iso"], how="outer")
             .join(df_naturalization, on=["year", "country_iso"], how="outer")
             .join(df_resettlement, on=["year", "country_iso"], how="outer")
+        )
+
+        df_displacement = df_displacement.withColumn(
+            "id", concat_ws("_", col("year").cast("string"), col("country_iso"))
         )
 
         output_directory = f"{configuration.__getattribute__('output_dir')}/{kpi_name}"
