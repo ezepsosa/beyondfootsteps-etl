@@ -33,7 +33,7 @@ class AsylumDecisionsJobs(GoldJob):
             col("dec_total"),
             col("acceptance_rate"),
             col("intake_date"),
-        )
+        ).withColumnRenamed("id_asylumdecisions", "id")
 
         output_directory = f"{configuration.__getattribute__('output_dir')}/{kpi_name}"
 

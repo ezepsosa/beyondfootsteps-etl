@@ -32,6 +32,7 @@ class AsylumRequestsJob(GoldJob):
                 how="left",
             )
             .select(
+                col("applications.id_asylumapplications"),
                 col("applications.year"),
                 col("applications.country_of_origin"),
                 col("applications.country_of_origin_iso"),
@@ -45,6 +46,8 @@ class AsylumRequestsJob(GoldJob):
                 try_divide(col("applications.applied"), col("population.population"))
                 * lit(100000),
             )
+            .withColumnRenamed("id_asylumapplications", "id")
+            
         )
 
         output_directory = f"{configuration.__getattribute__('output_dir')}/{kpi_name}"
