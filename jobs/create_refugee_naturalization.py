@@ -41,7 +41,7 @@ class RefugeeNaturalizationJob(GoldJob):
                 ),
             )
             .drop(col("previous_total"))
-        )
+        ).withColumnRenamed("id_refugeenaturalization", "id")
 
         output_directory = f"{configuration.__getattribute__('output_dir')}/{kpi_name}"
 
