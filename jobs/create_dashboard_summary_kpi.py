@@ -100,7 +100,7 @@ class DashboardSummaryJob(GoldJob):
 
         df_displacement = df_displacement.withColumn(
             "id", concat_ws("_", col("year").cast("string"), col("country_iso"))
-        )
+        ).withColumnRenamed("country_of_asylum", "country")
 
         output_directory = f"{configuration.__getattribute__('output_dir')}/{kpi_name}"
 
