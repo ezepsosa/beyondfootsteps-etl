@@ -30,39 +30,51 @@ class DashboardSummaryJob(GoldJob):
 
         # RENAME AND SELECT STANDARDIZED FIELDS
         df_asylum_requests = df_asylum_requests_kpi.groupBy(
-            "year", col("country_of_asylum_iso").alias("country_iso")
+            "year",
+            col("country_of_asylum_iso").alias("country_iso"),
+            col("country_of_asylum")
         ).agg(
             spark_sum("applied").alias("total_applied"),
             spark_avg("applied_per_100k").alias("applied_per_100k"),
         )
 
         df_asylum_decisions = df_asylum_decisions_kpi.groupBy(
-            "year", col("country_of_asylum_iso").alias("country_iso")
+            "year",
+            col("country_of_asylum_iso").alias("country_iso"),
+            col("country_of_asylum")
         ).agg(spark_avg("acceptance_rate").alias("acceptance_rate"))
 
         df_idp_displacement = df_idp_displacement_kpi.groupBy(
-            "year", col("country_of_origin_iso").alias("country_iso")
+            "year",
+            col("country_of_origin_iso").alias("country_iso"),
+            col("country_of_origin").alias("country_of_asylum")
         ).agg(
             spark_sum("total").alias("internal_displacement_total"),
             spark_avg("displacement_rate_per_100k").alias("displacement_rate_per_100k"),
         )
 
         df_idp_returnees = df_idp_returnees_kpi.groupBy(
-            "year", col("country_of_origin_iso").alias("country_iso")
+            "year",
+            col("country_of_origin_iso").alias("country_iso"),
+            col("country_of_origin").alias("country_of_asylum")
         ).agg(
             spark_sum("idp_returnees").alias("idp_returnees"),
             spark_sum("refugees_returnees").alias("refugees_returnees"),
         )
 
         df_naturalization = df_refugee_naturalization_kpi.groupBy(
-            "year", col("country_of_asylum_iso").alias("country_iso")
+            "year",
+            col("country_of_asylum_iso").alias("country_iso"),
+            col("country_of_asylum")
         ).agg(
             spark_sum("total").alias("naturalizations_total"),
             spark_avg("naturalization_change").alias("naturalization_change"),
         )
 
         df_resettlement = df_resettlements_summary_kpi.groupBy(
-            "year", col("country_of_asylum_iso").alias("country_iso")
+            "year",
+            col("country_of_asylum_iso").alias("country_iso"),
+            col("country_of_asylum")
         ).agg(
             spark_sum("persons").alias("resettlement_requests"),
             spark_sum("departures_total").alias("resettlement_departures"),
@@ -78,12 +90,12 @@ class DashboardSummaryJob(GoldJob):
         # TABLES JOIN
         df_displacement = (
             df_asylum_requests.join(
-                df_asylum_decisions, on=["year", "country_iso"], how="outer"
+                df_asylum_decisions, on=["year", "country_iso", "country_of_asylum"], how="outer"
             )
-            .join(df_idp_displacement, on=["year", "country_iso"], how="outer")
-            .join(df_idp_returnees, on=["year", "country_iso"], how="outer")
-            .join(df_naturalization, on=["year", "country_iso"], how="outer")
-            .join(df_resettlement, on=["year", "country_iso"], how="outer")
+            .join(df_idp_displacement, on=["year", "country_iso", "country_of_asylum"], how="outer")
+            .join(df_idp_returnees, on=["year", "country_iso", "country_of_asylum"], how="outer")
+            .join(df_naturalization, on=["year", "country_iso", "country_of_asylum"], how="outer")
+            .join(df_resettlement, on=["year", "country_iso", "country_of_asylum"], how="outer")
         )
 
         df_displacement = df_displacement.withColumn(
