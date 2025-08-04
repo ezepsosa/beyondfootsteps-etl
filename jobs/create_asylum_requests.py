@@ -7,7 +7,9 @@ from pyspark.sql.functions import (
     sum as _sum,
     max as _max,
     when,
+    concat_ws,
 )
+
 from sparklibs.job import GoldJob, Configuration
 
 
@@ -61,6 +63,15 @@ class AsylumRequestsJob(GoldJob):
                 try_divide(col("applications.applied"), col("population.population"))
                 * lit(100_000),
             )
+        )
+        df_asylum_requests = df_asylum_requests.withColumn(
+            "id",
+            concat_ws(
+                "_",
+                col("year"),
+                col("country_of_origin_iso"),
+                col("country_of_asylum_iso"),
+            ),
         )
 
         output_directory = f"{configuration.__getattribute__('output_dir')}/{kpi_name}"
