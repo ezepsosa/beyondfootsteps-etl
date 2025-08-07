@@ -204,3 +204,6 @@ notebooks
 
 #vscode config
 .vscode
+
+#configuration files
+config/*
